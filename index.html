@@ -53,6 +53,9 @@
 
         <main class="main-content">
             <header class="top-navbar">
+                <button class="menu-toggle" id="menuToggle">
+                    <span class="hamburger-icon"></span>
+                </button>
                 <div class="search-bar">
                     <input type="text" placeholder="Search...">
                     <button type="button"><i class="icon-search"></i></button>
@@ -79,7 +82,7 @@
                     </div>
                     <div class="card summary-card">
                         <h3>Total Revenue</h3>
-                        <p id="totalRevenue">$0.00</p>
+                        <p id="totalRevenue">Ksh 0.00</p>
                     </div>
                 </div>
                 <div class="recent-activities">
@@ -96,20 +99,22 @@
                     <button class="btn btn-primary" id="addProductBtn">Add New Product</button>
                 </div>
                 <div class="card">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th>Stock</th>
-                                <th>Price</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inventoryTableBody">
-                            </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Stock</th>
+                                    <th>Price</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTableBody">
+                                </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -130,20 +135,22 @@
                     </div>
                 </div>
                 <div class="card">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Date</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ordersTableBody">
-                            </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                                </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -153,19 +160,21 @@
                     <button class="btn btn-primary" id="addCustomerBtn">Add New Customer</button>
                 </div>
                 <div class="card">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="customersTableBody">
-                            </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTableBody">
+                                </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -175,19 +184,21 @@
                     <button class="btn btn-primary" id="addSupplierBtn">Add New Supplier</button>
                 </div>
                 <div class="card">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Contact Person</th>
-                                <th>Phone</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="suppliersTableBody">
-                            </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Contact Person</th>
+                                    <th>Phone</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="suppliersTableBody">
+                                </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -196,7 +207,7 @@
                 <div class="reports-summary-cards">
                     <div class="card summary-card">
                         <h3>Total Sales This Month</h3>
-                        <p id="totalSalesMonth">$0.00</p>
+                        <p id="totalSalesMonth">Ksh 0.00</p>
                     </div>
                     <div class="card summary-card">
                         <h3>Best-Selling Product</h3>
@@ -246,6 +257,8 @@
             </section>
         </main>
     </div>
+
+    <div class="overlay" id="sidebarOverlay"></div>
 
     <div class="modal" id="productModal">
         <div class="modal-content">
