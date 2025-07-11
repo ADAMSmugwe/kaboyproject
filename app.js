@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
     const logoutBtn = document.getElementById('logoutBtn');
     const logoutDropdownBtn = document.getElementById('logoutDropdownBtn');
+    const sidebar = document.querySelector('.sidebar'); // Get the sidebar element
     const sidebarNavLinks = document.querySelectorAll('.sidebar-nav a');
     const userAvatar = document.getElementById('userAvatar');
     const userDropdown = document.getElementById('userDropdown');
@@ -38,7 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileSettingsForm = document.getElementById('profileSettingsForm');
     const closeButtons = document.querySelectorAll('.modal .close-button');
 
-    // In-memory data storage
+    // New mobile-friendly elements
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+
+    // In-memory data storage (persisted to localStorage)
     let products = JSON.parse(localStorage.getItem('products')) || [
         { id: 'PRO001', name: 'Chicken Feed (25kg)', category: 'Poultry', stock: 150, price: 2500 },
         { id: 'PRO002', name: 'Maize Seeds (1kg)', category: 'Seeds', stock: 200, price: 350 },
@@ -99,10 +105,27 @@ document.addEventListener('DOMContentLoaded', () => {
             dashboardPage.style.display = 'none';
         } else {
             loginPage.style.display = 'none';
-            dashboardPage.style.display = 'grid'; // Use grid for dashboard layout
+            // Dashboard container uses flex for mobile sidebar and grid for desktop
+            dashboardPage.style.display = 'flex'; // Default to flex for column on mobile
+            // Re-apply desktop grid if window is wide enough (handled by CSS media query)
+            if (window.innerWidth >= 768) {
+                 dashboardPage.style.display = 'grid'; // For initial load on desktop
+            }
             // Ensure sidebar is hidden on mobile when dashboard first loads
-            document.querySelector('.sidebar').classList.remove('active');
+            sidebar.classList.remove('active');
+            menuToggle.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
         }
+    };
+
+    /**
+     * @function toggleSidebar
+     * @description Toggles the visibility of the sidebar for mobile.
+     */
+    const toggleSidebar = () => {
+        sidebar.classList.toggle('active');
+        menuToggle.classList.toggle('active'); // Animate hamburger icon
+        sidebarOverlay.classList.toggle('active'); // Show/hide overlay
     };
 
     /**
@@ -139,6 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (sectionId === 'reports') {
             renderReports();
             updateReportSummary();
+        }
+
+        // Close sidebar after clicking a link on mobile
+        if (window.innerWidth < 768) {
+            toggleSidebar();
         }
     };
 
@@ -192,6 +220,11 @@ document.addEventListener('DOMContentLoaded', () => {
         showPage(loginPage);
     }
 
+    // --- Mobile Sidebar Toggle ---
+    menuToggle.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click', toggleSidebar); // Close sidebar when clicking on overlay
+
+
     // --- Sidebar Navigation ---
     sidebarNavLinks.forEach(link => {
         link.addEventListener('click', (e) => {
@@ -208,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Close dropdown if clicked outside
     document.addEventListener('click', (e) => {
-        if (!userAvatar.contains(e.target) && !userDropdown.contains(e.target)) {
+        if (!userAvatar.contains(e.target) && !userDropdown.contains(e.target) && userDropdown.classList.contains('active')) {
             userDropdown.classList.remove('active');
         }
     });
@@ -635,21 +668,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 0);
 
         // Simple best-selling product logic (based on total quantity sold)
-        const productSales = {};
+        // In a real application, this would involve processing order line items.
+        // For this example, let's assume "Chicken Feed" is frequently ordered.
+        const productOrderCounts = {};
+        products.forEach(p => productOrderCounts[p.name] = 0); // Initialize counts
+
         orders.forEach(order => {
-            // For a real app, you'd have order items to calculate this
-            // Stubbing for now: assume 'Chicken Feed' is often bought
-            if (!productSales['Chicken Feed']) productSales['Chicken Feed'] = 0;
-            productSales['Chicken Feed'] += 1; // Example: count as one sale
+            // This is a placeholder. In a real app, orders would have `items` array.
+            // For now, we'll just increment a generic "best seller" placeholder.
+            productOrderCounts['Chicken Feed (25kg)'] += 1; // Arbitrarily increment for example
         });
+
         let bestSellingProduct = 'N/A';
-        let maxSales = 0;
-        for (const product in productSales) {
-            if (productSales[product] > maxSales) {
-                maxSales = productSales[product];
-                bestSellingProduct = product;
+        let maxOrders = 0;
+        for (const productName in productOrderCounts) {
+            if (productOrderCounts[productName] > maxOrders) {
+                maxOrders = productOrderCounts[productName];
+                bestSellingProduct = productName;
             }
         }
+
 
         const lowStockProducts = products.filter(p => p.stock < 20).length; // Threshold for low stock
 
@@ -686,11 +724,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     profileSettingsForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        alert('Profile settings saved! (Stub)');
+        alert('Profile settings saved! (This is a stub; no actual save operation performed)');
         // In a real app, you'd send this data to a backend
     });
 
     // Initial setup calls
     applyDarkModePreference();
     updateDashboardSummary();
+
+    // Event listener for window resize to adjust dashboard container display
+    window.addEventListener('resize', () => {
+        if (localStorage.getItem('loggedIn') === 'true') {
+            if (window.innerWidth >= 768) {
+                dashboardPage.style.display = 'grid';
+            } else {
+                dashboardPage.style.display = 'flex';
+            }
+        }
+    });
 });
