@@ -105,14 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
             dashboardPage.style.display = 'none';
         } else {
             loginPage.style.display = 'none';
-            // Dashboard container uses flex for mobile sidebar and grid for desktop
-            dashboardPage.style.display = 'flex'; // Default to flex for column on mobile
-            // Re-apply desktop grid if window is wide enough (handled by CSS media query)
-            if (window.innerWidth >= 768) {
-                 dashboardPage.style.display = 'grid'; // For initial load on desktop
-            }
-            // Ensure sidebar is hidden on mobile when dashboard first loads
-            sidebar.classList.remove('active');
+            // Dashboard page visibility is now controlled by CSS for mobile/desktop layouts
+            dashboardPage.style.display = 'flex'; // Default for mobile and small screens
+            // On larger screens, the CSS media query will override this to 'grid'
+            sidebar.classList.remove('active'); // Ensure sidebar is closed when navigating to dashboard
             menuToggle.classList.remove('active');
             sidebarOverlay.classList.remove('active');
         }
@@ -126,6 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebar.classList.toggle('active');
         menuToggle.classList.toggle('active'); // Animate hamburger icon
         sidebarOverlay.classList.toggle('active'); // Show/hide overlay
+        // Optional: prevent body scrolling when sidebar is open
+        document.body.classList.toggle('no-scroll', sidebar.classList.contains('active'));
     };
 
     /**
@@ -164,8 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
             updateReportSummary();
         }
 
-        // Close sidebar after clicking a link on mobile
-        if (window.innerWidth < 768) {
+        // Close sidebar after clicking a link on mobile (if sidebar is open)
+        if (window.innerWidth < 768 && sidebar.classList.contains('active')) {
             toggleSidebar();
         }
     };
@@ -194,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (username && password) {
             localStorage.setItem('loggedIn', 'true');
             showPage(dashboardPage);
-            showSection('dashboard');
+            showSection('dashboard'); // Default section after login
         } else {
             alert('Please enter username and password.');
         }
@@ -213,9 +211,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Check login status on page load
-    if (localStorage.getItem('loggedIn') === 'true') {
+    const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+    if (isLoggedIn) {
         showPage(dashboardPage);
-        showSection('dashboard');
+        showSection('dashboard'); // Ensure a section is displayed
     } else {
         showPage(loginPage);
     }
@@ -668,15 +667,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 0);
 
         // Simple best-selling product logic (based on total quantity sold)
-        // In a real application, this would involve processing order line items.
-        // For this example, let's assume "Chicken Feed" is frequently ordered.
         const productOrderCounts = {};
-        products.forEach(p => productOrderCounts[p.name] = 0); // Initialize counts
+        products.forEach(p => productOrderCounts[p.name] = 0);
 
         orders.forEach(order => {
-            // This is a placeholder. In a real app, orders would have `items` array.
-            // For now, we'll just increment a generic "best seller" placeholder.
-            productOrderCounts['Chicken Feed (25kg)'] += 1; // Arbitrarily increment for example
+            // Placeholder: In a real app, orders would have `items` to calculate this accurately.
+            // For now, let's just make one product appear as best-selling for demo.
+            const demoProduct = 'Chicken Feed (25kg)';
+            if (productOrderCounts.hasOwnProperty(demoProduct)) {
+                productOrderCounts[demoProduct] += 1;
+            } else {
+                productOrderCounts[demoProduct] = 1;
+            }
         });
 
         let bestSellingProduct = 'N/A';
@@ -730,16 +732,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial setup calls
     applyDarkModePreference();
-    updateDashboardSummary();
-
-    // Event listener for window resize to adjust dashboard container display
-    window.addEventListener('resize', () => {
-        if (localStorage.getItem('loggedIn') === 'true') {
-            if (window.innerWidth >= 768) {
-                dashboardPage.style.display = 'grid';
-            } else {
-                dashboardPage.style.display = 'flex';
-            }
-        }
-    });
+    // No need to call updateDashboardSummary() or render*() functions directly here.
+    // showSection('dashboard') will trigger updateDashboardSummary() after login.
 });
