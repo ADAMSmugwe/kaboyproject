@@ -16,6 +16,7 @@
     --spacing-md: 16px;
     --spacing-lg: 24px;
     --spacing-xl: 32px;
+    --spacing-xxl: 48px;
 }
 
 /* Dark Mode Variables */
@@ -42,6 +43,9 @@ body {
     color: var(--text-color);
     background-color: var(--background-color);
     transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex; /* Make body a flex container */
+    flex-direction: column; /* Stack children vertically */
+    min-height: 100vh;
 }
 
 a {
@@ -140,13 +144,20 @@ button, .btn {
 }
 
 /* Table Styling */
+.table-responsive {
+    overflow-x: auto; /* Ensures horizontal scrolling for tables on small screens */
+    -webkit-overflow-scrolling: touch; /* Improves scrolling on iOS */
+    border-radius: 8px; /* Apply to container for rounded corners */
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: var(--spacing-md);
     background-color: var(--card-background);
     border-radius: 8px;
-    overflow: hidden; /* Ensures rounded corners apply to content */
+    /* overflow: hidden; /* Moved to .table-responsive */
+    min-width: 600px; /* Ensure tables are wide enough to scroll if content too much */
 }
 
 table th, table td {
@@ -170,6 +181,24 @@ table tr:last-child td {
 table tbody tr:hover {
     background-color: var(--hover-bg);
 }
+
+.status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+.status.pending {
+    background-color: var(--secondary-color);
+    color: #8b5e00;
+}
+
+.status.completed {
+    background-color: var(--primary-color);
+    color: white;
+}
+
 
 /* Login Page */
 .login-container {
@@ -209,10 +238,10 @@ table tbody tr:hover {
 
 /* Dashboard Layout */
 .dashboard-container {
-    display: grid;
-    grid-template-columns: 1fr; /* Mobile: full width */
-    grid-template-rows: auto 1fr;
+    display: flex; /* Use flexbox for desktop, easier sidebar slide for mobile */
+    flex-direction: column; /* Default for mobile: stack sidebar and main */
     min-height: 100vh;
+    flex-grow: 1; /* Allow container to grow and fill body */
 }
 
 /* Sidebar */
@@ -220,19 +249,20 @@ table tbody tr:hover {
     background-color: var(--card-background);
     box-shadow: 2px 0 5px var(--shadow-color);
     padding: var(--spacing-md);
-    display: none; /* Hidden by default on mobile */
-    position: fixed; /* Fixed for desktop */
+    position: fixed; /* Fixed for mobile, slides out */
     left: 0;
     top: 0;
     height: 100%;
     width: 250px;
-    z-index: 1000; /* Ensure it's above content */
-    transition: transform 0.3s ease;
-    transform: translateX(-100%); /* Start hidden */
+    z-index: 1000;
+    transform: translateX(-100%); /* Start hidden off-screen */
+    transition: transform 0.3s ease-in-out;
+    display: flex; /* Ensures content inside is laid out */
+    flex-direction: column;
 }
 
 .sidebar.active {
-    transform: translateX(0); /* Show sidebar */
+    transform: translateX(0); /* Slide in */
 }
 
 .sidebar-header {
@@ -279,7 +309,26 @@ table tbody tr:hover {
     font-size: 1.2em; /* For icon placeholders */
 }
 
-/* Top Navbar (for mobile primarily, integrates with desktop layout) */
+/* Overlay for when sidebar is open on mobile */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+.overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+
+/* Top Navbar */
 .top-navbar {
     display: flex;
     justify-content: space-between;
@@ -289,7 +338,7 @@ table tbody tr:hover {
     box-shadow: 0 2px 4px var(--shadow-color);
     position: sticky;
     top: 0;
-    z-index: 999;
+    z-index: 998; /* Below sidebar, above main content */
     width: 100%;
 }
 
@@ -355,11 +404,66 @@ table tbody tr:hover {
     display: block;
 }
 
+/* Menu Toggle Button (Hamburger) */
+.menu-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    position: relative;
+    margin-right: var(--spacing-md); /* Space between toggle and search */
+}
+
+.hamburger-icon,
+.hamburger-icon::before,
+.hamburger-icon::after {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: var(--text-color);
+    border-radius: 2px;
+    transition: all 0.3s ease-in-out;
+}
+
+.hamburger-icon::before,
+.hamburger-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+}
+
+.hamburger-icon::before {
+    top: 0;
+}
+
+.hamburger-icon::after {
+    bottom: 0;
+}
+
+/* Animation for close button (X) */
+.menu-toggle.active .hamburger-icon {
+    background-color: transparent; /* Middle bar disappears */
+}
+
+.menu-toggle.active .hamburger-icon::before {
+    transform: rotate(45deg) translate(5px, 5px); /* Rotate and move into X shape */
+}
+
+.menu-toggle.active .hamburger-icon::after {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
 /* Main Content */
 .main-content {
     padding: var(--spacing-lg);
     background-color: var(--background-color);
-    flex-grow: 1; /* For mobile, expands to fill space */
+    flex-grow: 1; /* Allows it to take remaining vertical space */
+    transition: transform 0.3s ease-in-out;
 }
 
 .dashboard-section {
@@ -559,24 +663,29 @@ input:checked + .slider:before {
 /* Tablet and larger screens (min-width: 768px) */
 @media (min-width: 768px) {
     .dashboard-container {
-        grid-template-columns: 250px 1fr; /* Sidebar width + content */
+        flex-direction: row; /* Desktop layout: sidebar and main side-by-side */
     }
 
     .sidebar {
-        display: block; /* Show sidebar on tablet and desktop */
-        transform: translateX(0); /* Ensure it's visible */
-        position: static; /* No longer fixed */
-        height: auto; /* Adapts to content */
+        position: static; /* No longer fixed on desktop */
+        transform: translateX(0); /* Always visible */
+        width: 250px; /* Explicit width for desktop sidebar */
+        box-shadow: 2px 0 5px var(--shadow-color); /* Retain shadow */
+        flex-shrink: 0; /* Prevent sidebar from shrinking */
     }
 
     .top-navbar {
-        grid-column: 2 / 3; /* Places top navbar in second column */
-        width: auto; /* Let grid handle width */
+        justify-content: flex-end; /* Push search/user to the right */
+        padding: var(--spacing-md) var(--spacing-lg); /* Adjust padding */
+    }
+
+    .menu-toggle {
+        display: none; /* Hide hamburger on desktop */
     }
 
     .main-content {
-        grid-column: 2 / 3; /* Places main content in second column */
-        padding: var(--spacing-xl);
+        padding: var(--spacing-xl); /* More padding for larger screens */
+        transform: translateX(0); /* Ensure no shift on desktop */
     }
 
     .dashboard-summary-cards, .reports-summary-cards {
@@ -584,18 +693,23 @@ input:checked + .slider:before {
     }
 
     .search-bar {
-        margin-right: var(--spacing-xl);
+        margin-right: auto; /* Push search to the left */
+        max-width: 300px; /* Limit search bar width on desktop */
+    }
+
+    .overlay {
+        display: none !important; /* Ensure overlay is always hidden on desktop */
     }
 }
 
 /* Desktop and larger screens (min-width: 1024px) */
 @media (min-width: 1024px) {
-    .dashboard-container {
-        grid-template-columns: 280px 1fr; /* Slightly wider sidebar */
+    .sidebar {
+        width: 280px; /* Slightly wider sidebar */
     }
 
     .main-content {
-        padding: var(--spacing-xl) var(--spacing-xxl); /* More padding for larger screens */
+        padding: var(--spacing-xl) var(--spacing-xxl); /* Even more padding */
     }
 
     .summary-card p {
