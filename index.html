@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaboy Agrovet Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="login-container" id="loginPage">
+        <div class="login-card">
+            <h2>Login to Kaboy Agrovet</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-options">
+                    <label for="rememberMe">
+                        <input type="checkbox" id="rememberMe" name="rememberMe"> Remember me
+                    </label>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="dashboard-container" id="dashboardPage" style="display: none;">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/logo.png" alt="Kaboy Agrovet Logo" class="brand-logo">
+                <h3>Kaboy Agrovet</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#" data-section="dashboard"><i class="icon-dashboard"></i> Dashboard</a></li>
+                    <li><a href="#" data-section="inventory"><i class="icon-inventory"></i> Inventory</a></li>
+                    <li><a href="#" data-section="orders"><i class="icon-orders"></i> Orders</a></li>
+                    <li><a href="#" data-section="customers"><i class="icon-customers"></i> Customers</a></li>
+                    <li><a href="#" data-section="suppliers"><i class="icon-suppliers"></i> Suppliers</a></li>
+                    <li><a href="#" data-section="reports"><i class="icon-reports"></i> Reports</a></li>
+                    <li><a href="#" data-section="settings"><i class="icon-settings"></i> Settings</a></li>
+                    <li><a href="#" id="logoutBtn"><i class="icon-logout"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-navbar">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search...">
+                    <button type="button"><i class="icon-search"></i></button>
+                </div>
+                <div class="user-profile">
+                    <img src="assets/avatar.png" alt="User Avatar" class="user-avatar" id="userAvatar">
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#" data-section="settings">Profile</a>
+                        <a href="#" id="logoutDropdownBtn">Logout</a>
+                    </div>
+                </div>
+            </header>
+
+            <section class="dashboard-section" id="dashboard">
+                <h1>Dashboard</h1>
+                <div class="dashboard-summary-cards">
+                    <div class="card summary-card">
+                        <h3>Total Orders Today</h3>
+                        <p id="totalOrdersToday">0</p>
+                    </div>
+                    <div class="card summary-card">
+                        <h3>Pending Orders</h3>
+                        <p id="pendingOrders">0</p>
+                    </div>
+                    <div class="card summary-card">
+                        <h3>Total Revenue</h3>
+                        <p id="totalRevenue">$0.00</p>
+                    </div>
+                </div>
+                <div class="recent-activities">
+                    <h2>Recent Activities</h2>
+                    <div class="card">
+                        <p>No recent activities.</p>
+                        </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section hidden" id="inventory">
+                <h1>Inventory Management</h1>
+                <div class="section-actions">
+                    <button class="btn btn-primary" id="addProductBtn">Add New Product</button>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Stock</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="dashboard-section hidden" id="orders">
+                <h1>Orders & Sales</h1>
+                <div class="dashboard-summary-cards">
+                    <div class="card summary-card">
+                        <h3>Total Orders</h3>
+                        <p id="ordersTotalCount">0</p>
+                    </div>
+                    <div class="card summary-card">
+                        <h3>Completed Orders</h3>
+                        <p id="ordersCompletedCount">0</p>
+                    </div>
+                    <div class="card summary-card">
+                        <h3>Pending Orders</h3>
+                        <p id="ordersPendingCount">0</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="dashboard-section hidden" id="customers">
+                <h1>Customers</h1>
+                <div class="section-actions">
+                    <button class="btn btn-primary" id="addCustomerBtn">Add New Customer</button>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="dashboard-section hidden" id="suppliers">
+                <h1>Suppliers</h1>
+                <div class="section-actions">
+                    <button class="btn btn-primary" id="addSupplierBtn">Add New Supplier</button>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Contact Person</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="suppliersTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="dashboard-section hidden" id="reports">
+                <h1>Reports</h1>
+                <div class="reports-summary-cards">
+                    <div class="card summary-card">
+                        <h3>Total Sales This Month</h3>
+                        <p id="totalSalesMonth">$0.00</p>
+                    </div>
+                    <div class="card summary-card">
+                        <h3>Best-Selling Product</h3>
+                        <p id="bestSellingProduct">N/A</p>
+                    </div>
+                    <div class="card summary-card">
+                        <h3>Low Stock Alerts</h3>
+                        <p id="lowStockAlerts">0</p>
+                    </div>
+                </div>
+                <div class="card chart-container">
+                    <h2>Sales Over Time</h2>
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </section>
+
+            <section class="dashboard-section hidden" id="settings">
+                <h1>Settings</h1>
+                <div class="card">
+                    <h2>Appearance</h2>
+                    <div class="setting-item">
+                        <span>Dark Mode</span>
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="card profile-settings">
+                    <h2>Profile Settings</h2>
+                    <form id="profileSettingsForm">
+                        <div class="form-group">
+                            <label for="profileName">Name</label>
+                            <input type="text" id="profileName" name="profileName" value="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="profileEmail">Email</label>
+                            <input type="email" id="profileEmail" name="profileEmail" value="john.doe@kaboy.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="profilePassword">New Password</label>
+                            <input type="password" id="profilePassword" name="profilePassword">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Add/Edit Product</h2>
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                <div class="form-group">
+                    <label for="productName">Product Name</label>
+                    <input type="text" id="productName" required>
+                </div>
+                <div class="form-group">
+                    <label for="productCategory">Category</label>
+                    <input type="text" id="productCategory" required>
+                </div>
+                <div class="form-group">
+                    <label for="productStock">Stock</label>
+                    <input type="number" id="productStock" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Price</label>
+                    <input type="number" id="productPrice" step="0.01" required min="0">
+                </div>
+                <button type="submit" class="btn btn-primary">Save Product</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="customerModal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Add/Edit Customer</h2>
+            <form id="customerForm">
+                <input type="hidden" id="customerId">
+                <div class="form-group">
+                    <label for="customerName">Customer Name</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerEmail">Email</label>
+                    <input type="email" id="customerEmail">
+                </div>
+                <div class="form-group">
+                    <label for="customerPhone">Phone</label>
+                    <input type="text" id="customerPhone">
+                </div>
+                <button type="submit" class="btn btn-primary">Save Customer</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="supplierModal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Add/Edit Supplier</h2>
+            <form id="supplierForm">
+                <input type="hidden" id="supplierId">
+                <div class="form-group">
+                    <label for="supplierName">Supplier Name</label>
+                    <input type="text" id="supplierName" required>
+                </div>
+                <div class="form-group">
+                    <label for="supplierContactPerson">Contact Person</label>
+                    <input type="text" id="supplierContactPerson">
+                </div>
+                <div class="form-group">
+                    <label for="supplierPhone">Phone</label>
+                    <input type="text" id="supplierPhone">
+                </div>
+                <button type="submit" class="btn btn-primary">Save Supplier</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
